@@ -14,7 +14,9 @@ import pytest
     ],
 )
 def test_form(page: Page, first, last, email) -> None:
+    # Arrange
     page.goto("https://demoqa.com/automation-practice-form")
+    #Act
     page.get_by_role("textbox", name="First Name").click()
     page.get_by_role("textbox", name="First Name").fill(first)
     page.get_by_role("textbox", name="Last Name").click()
@@ -27,6 +29,7 @@ def test_form(page: Page, first, last, email) -> None:
     page.get_by_role("textbox", name="Mobile Number").fill("1234567891")
     page.get_by_role("textbox", name="Mobile Number").click()
     page.get_by_role("button", name="Submit").click()
+    #Assert
     expect(page.get_by_text("Thanks for submitting the form")).to_be_visible()
     page.get_by_text("Thanks for submitting the form").dblclick()
     page.locator("div").filter(has_text="Thanks for submitting the form").nth(3).click()

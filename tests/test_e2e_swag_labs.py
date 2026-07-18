@@ -13,12 +13,10 @@ from playwright.sync_api import Page, expect
     ],
 )
 def test_checkout_happy_path(page: Page, product: str):
-    # --- Log in ---
     page.goto("/")
     page.get_by_placeholder("Username").fill("standard_user")
     page.get_by_placeholder("Password").fill("secret_sauce")
     page.locator("#login-button").click()
-    # --- Add an item, open cart, check out ---
     page.locator(f"#add-to-cart-{product}").click()
     page.locator(".shopping_cart_link").click()
     page.locator("#checkout").click()
@@ -28,4 +26,3 @@ def test_checkout_happy_path(page: Page, product: str):
     page.locator("#continue").click()
     page.locator("#finish").click()
     assert page.locator(".complete-header").inner_text()  == "Thank you for your order!"
-    # expect(page.locator(".complete-header")).to_have_text("Thank you for your order!")
