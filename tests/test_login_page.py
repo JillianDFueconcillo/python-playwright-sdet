@@ -41,7 +41,7 @@ def test_login_success(page: Page):
 
 
 
-def test_login_success(page: Page, username):
+def test_login_success2(page: Page, username):
     # Login Object only has Logging Locators and Methods
     login_page = LoginPage(page)
     login_page.open()
