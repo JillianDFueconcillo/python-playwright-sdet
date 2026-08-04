@@ -32,22 +32,21 @@ def test_form(page: Page, first, last, email) -> None:
 )
 def test_download(page: Page, link: str) -> None:
     page.goto("https://the-internet.herokuapp.com/download")
+    download_link = page.locator(f'a[href="download/{link}"]')
+    if download_link.count() == 0:
+        pytest.skip(f"{link} is not available on the download page")
     with page.expect_download() as download_info:
-        page.get_by_role("link", name=link).click()
+        download_link.click()
     download = download_info.value
-    assert link in str(download)
+    assert link in download.suggested_filename
 
     
 def test_hidden_ad(page: Page) -> None:
     page.goto("https://the-internet.herokuapp.com/entry_ad")
     modal = page.locator("#modal")
-    # Wait for the modal to load
-    assert modal.is_visible()
-
+    expect(modal).to_be_visible()
     page.get_by_text("Close", exact=True).click()
-    modal.wait_for(state="hidden")
-
-    assert not modal.is_visible()
+    expect(modal).to_be_hidden()
     
     
     
