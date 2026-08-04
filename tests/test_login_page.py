@@ -30,7 +30,7 @@ def test_login_success(page: Page):
 
 
 @pytest.mark.parametrize(
-    "username",
+        "username",
     [
         ("standard_user"),
         ("problem_user"),
