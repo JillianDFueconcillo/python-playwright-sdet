@@ -16,9 +16,13 @@ __pycache__/
 allure-results/
 allure-report/
 test-results/
+report.html
+assets/
 
 # Local config
 .env
 
 # OS
 .DS_Store
+tests/test_setup.py
+tests/test_first.py
