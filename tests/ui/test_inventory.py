@@ -1,10 +1,12 @@
 import pytest
 
 from pages.InventoryPage import InventoryPage
-from pages.LoginPage import LoginPage
 
+
+# Level 1 check element exit, or are visible and work
 def test_sort_dropdown_visible(inventory_page: InventoryPage):
     assert inventory_page.get_sort_dropdown().is_visible()
+
 
 # Test actual functionality
 @pytest.mark.parametrize(
@@ -16,8 +18,9 @@ def test_sort_dropdown_visible(inventory_page: InventoryPage):
         ("hilo"),
     ],
 )
-def test_product_sort(inventory_page: InventoryPage, options: str):
+def test_sort_options(inventory_page: InventoryPage, options):
     inventory_page.sort_products_by(options)
+
     assert inventory_page.get_selected_sort() == options
 
 

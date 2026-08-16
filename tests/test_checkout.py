@@ -1,4 +1,13 @@
+import pytest
+
+
+from pages.CheckoutPage import CheckoutPage
 from pages.InventoryPage import InventoryPage
+
+
+
+
+
 
 
 def test_fill_out_page_is_visible(inventory_page: InventoryPage):
@@ -8,6 +17,26 @@ def test_fill_out_page_is_visible(inventory_page: InventoryPage):
     assert checkout_page.get_page_title().text_content() == "Checkout: Your Information"
     assert checkout_page.get_continue_button().is_visible()
 
+
+
+def test_checkout_happy_path(checkout_started:  CheckoutPage):
+# inventory_page.add_item_to_cart("sauce-labs-backpack")
+
+    checkout_started
+
+    assert checkout_page.get_page_title().text_content() == "Checkout: Overview"
+    assert checkout_page.get_item_names*() == ["Sauce Labs Backpack"]
+
+    checkout_page.finish()
+
+    assert checkout_page.get_complete_header().text_content() == "Thank you for your order!"
+
+
+# Fill information() and finish both return self, so the steps can be chained
+def test_checkout_chained(inventory_page): InventoryPage:
+    inventory_page.add_item_to_cart("sauce-labs-backpack")
+    
+     
 
 def test_all_information(inventory_page: InventoryPage):
     inventory_page.add_item_to_cart("sauce-labs-backpack")
