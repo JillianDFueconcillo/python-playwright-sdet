@@ -11,7 +11,7 @@ from playwright.sync_api import Page, expect
         "sauce-labs-fleece-jacket",
         "sauce-labs-onesie",
     ],
-)
+) 
 def test_checkout_happy_path(page: Page, product: str):
     # --- Log in ---
     page.goto("/")
