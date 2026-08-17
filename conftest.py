@@ -7,7 +7,9 @@ from pages.CheckoutPage import CheckoutPage
 from pages.LoginPage import LoginPage
 from pages.InventoryPage import InventoryPage
 
+
 load_dotenv()
+
 
 USERNAME = os.getenv("SAUCE_USERNAME")
 PASSWORD = os.getenv("SAUCE_PASSWORD")
