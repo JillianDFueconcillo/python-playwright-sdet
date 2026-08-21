@@ -11,6 +11,7 @@ from pages.InventoryPage import InventoryPage
 load_dotenv()
 
 
+
 # Sauce Demo's public credentials. GitHub Actions resolves missing secrets to
 # "", so `or` is required — `os.getenv` alone would still log in as empty.
 USERNAME = os.getenv("SAUCE_USERNAME") or "standard_user"
