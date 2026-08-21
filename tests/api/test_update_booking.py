@@ -29,7 +29,7 @@ def test_patch_changes_only_the_firstname(booking_client: BookingAPIClient, crea
     booking_id, payload = created_booking
     patch_payload = {"firstname": "Big"}
 
-    r = booking_client.partial_update_booking(booking_id, patch_payload)
+    r = booking_client.patch_booking(booking_id, patch_payload)
 
     expected_payload = payload.copy()
     expected_payload["firstname"] = "Big"
