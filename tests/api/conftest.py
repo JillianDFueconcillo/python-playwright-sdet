@@ -19,10 +19,20 @@ def api_session():
     yield session
     session.close()
 
+@pytest.fixture(scope="session")
+def auth_token(api_session) -> str:
+    r = requests.post(
+        f"{BASE_URL}/auth",
+        json={
+            "username": "admin",
+            "password": "password123"
+        }
+    )
+    return r.json()["token"]
 
 @pytest.fixture
-def booking_client(api_session):
-    return BookingAPIClient(api_session) 
+def booking_client(api_session, auth_token):
+    return BookingAPIClient(api_session, auth_token) 
 
 
 @pytest.fixture
@@ -30,3 +40,5 @@ def created_booking(booking_client):
     payload = make_booking()
     booking_id = booking_client.create_booking(payload).json()["bookingid"]
     yield booking_id, payload
+# After yield its will wait until everything
+    booking_client.delete_booking(booking_id)

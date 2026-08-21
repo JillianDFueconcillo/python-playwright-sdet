@@ -1,11 +1,10 @@
-from uuid import uuid4
+
 
 
 def make_booking(**overrides):
-    uuid = uuid4().hex[:8] # 3f7ff34x
     booking = {
-        "firstname" : f"Solid{uuid}",
-        "lastname" : f"Snake{uuid}",
+        "firstname" : "Solid",
+        "lastname" : "Snake",
         "totalprice" : 111,
         "depositpaid" : True,
         "bookingdates" : {
@@ -20,3 +19,5 @@ def make_booking(**overrides):
 # make_booking()
 # make_booking(
 #     first="Liquid",
+#     last_name="Geko"
+# )
