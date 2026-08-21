@@ -11,14 +11,11 @@ from pages.InventoryPage import InventoryPage
 load_dotenv()
 
 
-USERNAME = os.getenv("SAUCE_USERNAME")
-PASSWORD = os.getenv("SAUCE_PASSWORD")
+# Sauce Demo's public credentials. GitHub Actions resolves missing secrets to
+# "", so `or` is required — `os.getenv` alone would still log in as empty.
+USERNAME = os.getenv("SAUCE_USERNAME") or "standard_user"
+PASSWORD = os.getenv("SAUCE_PASSWORD") or "secret_sauce"
 BASE_URL = os.getenv("BASE_URL", "https://www.saucedemo.com/")
-
-# Fail in 1 second with a clear message, not in 12 minutes of locator timeouts.
-# `not PASSWORD` also catches the empty string — e.g. a renamed/missing GitHub
-# secret, which Actions silently resolves to "".
-
 
 AUTH_STATE_PATH = "playwright/.auth/state.json"
 
@@ -36,7 +33,17 @@ def auth_state(browser):
     # Setup guard: prove the login WORKED before saving the session.
     # Without this, a failed login saves a logged-out state.json and every
     # downstream test times out on inventory locators instead.
-    login_page.page.wait_for_url("**/inventory.html")
+    try:
+        login_page.page.wait_for_url("**/inventory.html")
+    except Exception:
+        error = login_page.get_error_message()
+        error_text = error.inner_text() if error.is_visible() else "(no error banner)"
+        pytest.fail(
+            f"auth_state login never reached inventory.html "
+            f"(url={login_page.page.url!r}, error={error_text!r}). "
+            "SAUCE_USERNAME / SAUCE_PASSWORD must be Sauce Demo credentials "
+            "(standard_user / secret_sauce), not a Sauce Labs account."
+        )
     context.storage_state(path=AUTH_STATE_PATH)
     context.close()
 
