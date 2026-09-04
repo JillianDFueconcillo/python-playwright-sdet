@@ -161,12 +161,48 @@ jobs:
       - name: Generate report
         run: allure generate allure-results --clean -o allure-report
 
-      # Builds site/: numbered run folders, latest/, last-history/, redirect.
+      # Builds site/: numbered run folder, latest/, last-history/, redirect.
       - name: Assemble the site
         run: |
-          chmod +x scripts/assemble_allure_site.sh
-          scripts/assemble_allure_site.sh \
-            allure-report gh-pages site "${{ github.run_number }}" 30
+          rm -rf site
+          mkdir -p site
+
+          # Copy this run's report into a numbered folder.
+          cp -R allure-report "site/${{ github.run_number }}"
+
+          # Make the latest report point to this run.
+          rm -rf site/latest
+          cp -R allure-report site/latest
+
+          # Preserve history for the next run.
+          rm -rf site/last-history
+          mkdir -p site/last-history
+
+          if [ -d "allure-report/history" ]; then
+            cp -R allure-report/history/. site/last-history/
+          fi
+
+          # Keep the most recent 30 reports.
+          if [ -d gh-pages ]; then
+            for dir in $(find gh-pages -mindepth 1 -maxdepth 1 -type d -name '[0-9]*' -printf '%f\n' | sort -n | head -n -30); do
+              rm -rf "site/$dir"
+            done
+          fi
+
+          # Redirect the site root to the latest report.
+          cat > site/index.html <<'HTML'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta http-equiv="refresh" content="0; url=latest/">
+            <title>Allure Report</title>
+          </head>
+          <body>
+            <p>Redirecting to <a href="latest/">latest Allure report</a>...</p>
+          </body>
+          </html>
+          HTML
+
 
       # Branches run the tests. Only master changes what the world sees.
       - name: Publish to GitHub Pages
