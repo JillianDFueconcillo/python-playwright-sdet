@@ -24,6 +24,7 @@ RESULTS_DIR = "allure-results"
 # ---------------------------------------------------------------------------
 # 1. Know whether the test passed.
 #
+#
 # Fixtures can't see their test's outcome, so this hook stashes the report on
 # the item. `result_call` is the test body; setup and teardown get their own.
 # ---------------------------------------------------------------------------
