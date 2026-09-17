@@ -64,6 +64,11 @@ def login_page(page: Page) -> LoginPage:
     return login_page
 
 @pytest.fixture
+def logged_out_inventory_page(page: Page) -> InventoryPage:
+    """InventoryPage on a logged-out browser. Tests choose how they try to reach it."""
+    return InventoryPage(page)
+
+@pytest.fixture
 def inventory_page(logged_in_page: Page) -> InventoryPage:
     """Logged in as standard_user, sitting on the products page."""
     logged_in_page.goto("/inventory.html")

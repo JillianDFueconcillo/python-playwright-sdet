@@ -22,6 +22,10 @@ class InventoryPage:
         self.cart_link = page.locator("[data-test=\"shopping-cart-link\"]")
 
     # Methods (Wrapper)
+    def open(self):
+        self.page.goto("/inventory.html")
+        return self
+
     def add_item_to_cart(self, item_id: str):
         self.page.locator(f"[data-test=\"add-to-cart-{item_id}\"]").click()
         return self

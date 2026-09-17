@@ -38,6 +38,9 @@ class LoginPage:
     #     self.login_user(self, "standard_user","secret_sauce")
 
     # Getters (are used for assertions later.)
+    def get_login_button(self):
+        return self.login_button
+
     def get_login_credentials(self):
         return self.login_credentials
 

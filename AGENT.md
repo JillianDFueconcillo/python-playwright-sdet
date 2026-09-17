@@ -1,8 +1,8 @@
-# AGENTS.md
+# AGENT.md
 
 Python SDET framework for **Swag Labs** (browser) and **restful-booker** (REST). Stack: Python 3.12, pytest, Playwright (UI only), requests (API only), Allure.
 
-This file is the source of truth for how to add and change tests. Follow it over older examples in the repo that still import Playwright `expect()`.
+This file is the source of truth for how to add and change tests. Detailed assertion rules also live in `.cursor/rules/new-automated-tests.mdc`.
 
 ## Apps under test
 
@@ -109,7 +109,7 @@ Prefer `data-test` locators, matching the existing page objects.
 ## How to write API tests
 
 1. Call `BookingAPIClient` methods. Do not use Playwright `APIRequestContext` or `playwright.request`.
-2. Build payloads with `make_booking(**overrides)` from `api.builders`.
+2. Build payloads with `make_booking(**overrides)` from `api.builders` (not a copy under `tests/api/`).
 3. Assert with pytest `assert` on `status_code` and `response.json()`.
 4. Use `created_booking` when the test needs an existing record. It yields `(booking_id, payload)` and deletes after the test, including on failure.
 
@@ -148,7 +148,7 @@ Mark API modules with `pytestmark = pytest.mark.api` when adding a new file.
 
 ```bash
 python -m venv venv
-venv\Scripts\Activate.ps1          # Windows
+venv\Scripts\Activate.ps1          # Windows PowerShell
 pip install -r requirements.txt
 playwright install chromium
 
@@ -159,6 +159,8 @@ python -m pytest --ignore=tests/api
 python -m pytest -k checkout
 python -m pytest --setup-show
 ```
+
+This terminal is often **cmd**, not PowerShell. In cmd use `venv\Scripts\activate.bat` and `move`, not `mv`.
 
 Each run writes `report.html`. Failures also leave screenshot, video, and trace under `test-results/`. Open traces at [trace.playwright.dev](https://trace.playwright.dev). Allure raw results go to `allure-results/` (`--alluredir` in `pytest.ini`).
 
@@ -178,11 +180,9 @@ Always upload artifacts with `if: always()` so failures still produce a report.
 |---|---|
 | New screen / control | New or existing class in `pages/` |
 | New booking endpoint | Method on `BookingAPIClient` |
-| New payload shape | `make_booking()` override or builder |
+| New payload shape | `make_booking()` override in `api/builders.py` |
 | New UI scenario | `tests/ui/test_*.py`, request an existing fixture |
 | New API scenario | `tests/api/test_*.py`, request `booking_client` / `created_booking` |
 | Shared UI setup | Root `conftest.py` |
 | Shared API setup | `tests/api/conftest.py` |
 | Reporting only | `support/allure_hooks.py` |
-
-Older files under `tests/ui/` (`test_internet.py`, `test_demoqa.py`, `test_login.py`, `test_e2e_swag_labs.py`) may still use `expect()` or raw locators. Do not copy that style. New tests follow this file and `.cursor/rules/new-automated-tests.mdc`.

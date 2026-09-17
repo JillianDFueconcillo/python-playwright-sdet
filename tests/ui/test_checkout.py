@@ -30,14 +30,30 @@ def test_checkout_with_different_customers(
     assert checkout_started.get_complete_header().text_content() == "Thank you for your order!"
 
 
+# Exact checkout-step-one copy (h3[data-test=error]). Empty first name is
+# checked first, so first+last empty and all-empty use the first-name message.
+FIRST_NAME_REQUIRED = "Error: First Name is required"
+LAST_NAME_REQUIRED = "Error: Last Name is required"
+POSTAL_CODE_REQUIRED = "Error: Postal Code is required"
+
+
 # Parameterized sad path: the SAME fill_information() method, but here we expect
 # an error. The page object stays neutral; the test decides what "correct" means.
 @pytest.mark.parametrize(
     "first_name, last_name, postal_code, error",
     [
-        ("", "Snake", "00001", "Error: First Name is required"),
-        ("Solid", "", "00001", "Error: Last Name is required"),
-        ("Solid", "Snake", "", "Error: Postal Code is required"),
+        ("", "Snake", "00001", FIRST_NAME_REQUIRED),
+        ("Solid", "", "00001", LAST_NAME_REQUIRED),
+        ("Solid", "Snake", "", POSTAL_CODE_REQUIRED),
+        ("", "", "00001", FIRST_NAME_REQUIRED),
+        ("", "", "", FIRST_NAME_REQUIRED),
+    ],
+    ids=[
+        "empty_first_name",
+        "empty_last_name",
+        "empty_postal_code",
+        "empty_first_and_last",
+        "all_three_empty",
     ],
 )
 def test_checkout_form_requires_all_fields(
@@ -46,9 +62,24 @@ def test_checkout_form_requires_all_fields(
     checkout_started.fill_information(first_name, last_name, postal_code)
 
     #                 expected  vs  actual
-    assert error in checkout_started.get_error_message().text_content()
+    assert checkout_started.get_error_message().text_content() == error
     # And we never left step one
     assert checkout_started.get_title().text_content() == "Checkout: Your Information"
+
+
+def test_checkout_200_character_values(checkout_started: CheckoutPage):
+    long_value = "A" * 200
+    checkout_started.fill_information(long_value, long_value, long_value)
+    # TODO: Sauce Demo does not document a max length, truncation, or error for
+    # 200-character checkout fields. Confirm whether Continue reaches
+    # "Checkout: Overview" or stays on step one, then assert that outcome.
+
+
+def test_checkout_unicode_values(checkout_started: CheckoutPage):
+    checkout_started.fill_information("名前", "фамилия", "東京-100-0001")
+    # TODO: Sauce Demo does not document whether unicode first name, last name,
+    # or postal code is accepted. Confirm whether Continue reaches
+    # "Checkout: Overview" or shows an error, then assert that outcome.
 
 
 # The overview totals: subtotal is the price of what we added ($29.99).
