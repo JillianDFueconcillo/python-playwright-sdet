@@ -1,0 +1,7 @@
+[     399ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://events.backtrace.io/api/unique-events/submit?universe=UNIVERSE&token=TOKEN:0
+[     399ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://events.backtrace.io/api/summed-events/submit?universe=UNIVERSE&token=TOKEN:0
+[     474ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://www.saucedemo.com/:0
+[   10434ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://events.backtrace.io/api/unique-events/submit?universe=UNIVERSE&token=TOKEN:0
+[   10434ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://events.backtrace.io/api/summed-events/submit?universe=UNIVERSE&token=TOKEN:0
+[   30478ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://events.backtrace.io/api/unique-events/submit?universe=UNIVERSE&token=TOKEN:0
+[   30478ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://events.backtrace.io/api/summed-events/submit?universe=UNIVERSE&token=TOKEN:0

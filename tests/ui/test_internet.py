@@ -1,7 +1,8 @@
 # Test Case 1: Click Action
 import uuid
+from pathlib import Path
 
-from playwright.sync_api import Dialog, Page, expect
+from playwright.sync_api import Page
 import pytest
 
 
@@ -17,8 +18,6 @@ def test_click_action(page: Page):
     delete_button.first.click()
     # for b in delete_button.all():
     #     b.click()
-    # Both are asserts, but one comes from playwright, the other from Pytest
-    expect(delete_button).to_be_visible()
     assert delete_button.is_visible()
 
 
@@ -72,17 +71,20 @@ def test_dropdown(page: Page):
     dropdown.select_option("2")
     dropdown.select_option(label="Option 1")
     dropdown.select_option(index=2)
+    assert dropdown.input_value() == "2"
 
 def test_hovers(page: Page):
     page.goto("https://the-internet.herokuapp.com/hovers")
     image= page.locator(".figure").first
     image.hover()
+    assert page.get_by_role("heading", name="name: user1").is_visible()
 
 def test_upload(page: Page):
     page.goto("https://the-internet.herokuapp.com/upload")
-    #  locator of the input          path to the file
-    page.locator("#file-upload").set_input_files("test_data/resume.txt")
+    resume = Path(__file__).resolve().parents[2] / "test_data" / "resume.txt"
+    page.locator("#file-upload").set_input_files(resume)
     page.locator("#file-submit").click()
+    assert "resume.txt" in page.locator("#uploaded-files").text_content()
 
 def test_drag_and_drop(page: Page):
     page.goto("https://the-internet.herokuapp.com/drag_and_drop")
@@ -99,24 +101,35 @@ def test_context_menu(page: Page) -> None:
 
 
 def test_upload_then_download_roundtrip(page: Page, tmp_path) -> None:
-    """/download lists whatever strangers upload, so hardcoded filenames rot.
-    Fix: OWN the data — upload a uniquely named file, then download that exact file.
-    (tmp_path is a pytest built-in fixture: a fresh temp folder per test.)"""
+    """Upload a unique file, then download a file that actually exists on /download.
+
+    the-internet stores /upload and /download in different folders, so the file
+    we upload will not show up on /download. Prove upload by filename, then
+    download the first listed file (page.expect_download waits for the event;
+    that is not Playwright expect()).
+    """
     file_name = f"pliskin-{uuid.uuid4().hex[:8]}.txt"
     local_file = tmp_path / file_name
     local_file.write_text("uploaded by the pliskin_june11 test suite")
 
-    # Arrange: put our own file on the server
     page.goto("https://the-internet.herokuapp.com/upload")
     page.locator("#file-upload").set_input_files(local_file)
     page.locator("#file-submit").click()
-    expect(page.locator("#uploaded-files")).to_have_text(file_name)
+    assert page.locator("#uploaded-files").text_content().strip() == file_name
 
-    # Act + assert: it must now appear on /download, under the name WE chose
     page.goto("https://the-internet.herokuapp.com/download")
+    file_link = page.locator(".example a").first
+    listed_name = file_link.text_content().strip()
+    assert listed_name
+
     with page.expect_download() as download_info:
-        page.get_by_role("link", name=file_name, exact=True).click()
-    assert download_info.value.suggested_filename == file_name
+        file_link.click()
+    download = download_info.value
+    assert download.suggested_filename == listed_name
+    saved = tmp_path / listed_name
+    download.save_as(saved)
+    assert saved.exists()
+    assert saved.stat().st_size > 0
 
 
 def test_hidden_ad(page: Page) -> None:

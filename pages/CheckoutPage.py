@@ -26,6 +26,8 @@ class CheckoutPage:
         self.subtotal_label = page.locator("[data-test=\"subtotal-label\"]")
         self.tax_label = page.locator("[data-test=\"tax-label\"]")
         self.total_label = page.locator("[data-test=\"total-label\"]")
+        self.payment_info = page.locator("[data-test=\"payment-info-value\"]")
+        self.shipping_info = page.locator("[data-test=\"shipping-info-value\"]")
         self.finish_button = page.locator("[data-test=\"finish\"]")
 
         # Step three — Complete
@@ -42,20 +44,32 @@ class CheckoutPage:
         self.last_name.fill(last_name)
         self.postal_code.fill(postal_code)
         self.continue_button.click()
+        # React SPA: stay on step one (error) or move to overview (Finish).
+        self.page.locator("[data-test=\"error\"], [data-test=\"finish\"]").first.wait_for()
         # Still inside the same checkout flow, so return self and keep chaining.
         return self
 
     def finish(self):
         # Confirms the order and lands on the "complete" screen.
         self.finish_button.click()
+        self.complete_header.wait_for()
         return self
 
-    def cancel(self):
-        # Cancel takes us back out of checkout.
+    def cancel_information(self):
+        from pages.CartPage import CartPage
+
+        self.cancel_button.click()
+        cart_page = CartPage(self.page)
+        cart_page.get_checkout_button().wait_for()
+        return cart_page
+
+    def cancel_overview(self):
         from pages.InventoryPage import InventoryPage
 
         self.cancel_button.click()
-        return InventoryPage(self.page)
+        inventory_page = InventoryPage(self.page)
+        inventory_page.get_sort_dropdown().wait_for()
+        return inventory_page
 
     def back_home(self):
         # Only available on the final "Thank you" screen.
@@ -63,7 +77,9 @@ class CheckoutPage:
         from pages.InventoryPage import InventoryPage
 
         self.back_home_button.click()
-        return InventoryPage(self.page)
+        inventory_page = InventoryPage(self.page)
+        inventory_page.get_sort_dropdown().wait_for()
+        return inventory_page
 
     # Getters (are used for assertions later.)
     def get_title(self):
@@ -96,5 +112,16 @@ class CheckoutPage:
         # "Item total: $29.99" -> 29.99
         subtotal_text = self.subtotal_label.text_content()
         return float(subtotal_text.split("$")[1])
+
+    def get_tax(self):
+        # "Tax: $2.40" -> 2.40
+        tax_text = self.tax_label.text_content()
+        return float(tax_text.split("$")[1])
+
+    def get_payment_info(self):
+        return self.payment_info
+
+    def get_shipping_info(self):
+        return self.shipping_info
 
     # CLASSES SHOULD NOT HAVE ANY ASSERTS(or Expects)

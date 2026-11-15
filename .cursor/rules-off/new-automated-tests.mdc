@@ -1,0 +1,72 @@
+---
+description: Standards for new UI and API tests (pytest assert, requests, no weakening)
+globs: "{pages,tests,api}/**/*.py"
+alwaysApply: true
+---
+
+# New Automated Tests
+
+Page objects interact with the UI. Tests own assertions. Never hide, weaken, or skip a check to get a green run.
+
+## Assertions belong in tests
+
+No `assert` inside page objects (`pages/`). Expose locators, getters, and actions; the test asserts with pytest `assert` only. Never use Playwright `expect()`.
+
+```python
+# ❌ BAD — assertion inside the page object, or Playwright expect()
+class LoginPage:
+    def login_user(self, username: str, password: str):
+        self.username.fill(username)
+        self.password.fill(password)
+        self.login_button.click()
+        expect(self.page).to_have_url("**/inventory.html")
+
+# ✅ GOOD — page object returns locators/state; the test uses pytest assert
+class LoginPage:
+    def login_user(self, username: str, password: str) -> InventoryPage:
+        self.username.fill(username)
+        self.password.fill(password)
+        self.login_button.click()
+        return InventoryPage(self.page)
+
+    def get_error_message(self):
+        return self.error_message
+
+def test_locked_out_user_sees_error(login_page: LoginPage):
+    login_page.login_user("locked_out_user", "secret_sauce")
+    assert "locked out" in login_page.get_error_message().text_content()
+```
+
+## Never sleep; never Playwright `expect()`
+
+Never `time.sleep()` or `page.wait_for_timeout()`. Never `expect()`. Locator actions and getters (`click`, `fill`, `text_content`, `inner_text`) auto-wait; then assert with pytest.
+
+```python
+# ❌ BAD
+time.sleep(3)
+expect(inventory_page.get_title()).to_have_text("Products")
+
+# ✅ GOOD
+assert inventory_page.get_title().text_content() == "Products"
+assert inventory_page.get_title().is_visible()
+```
+
+## API tests use requests only
+
+API tests and clients (`tests/api/`, `api/`) use the `requests` library only. Do not use Playwright `APIRequestContext`, `playwright.request`, or `expect()`. Assert with pytest on `status_code` and `response.json()`.
+
+```python
+# ❌ BAD — Playwright HTTP client
+response = api_context.post("/booking", data=payload)
+expect(response).to_be_ok()
+
+# ✅ GOOD — requests session/client + pytest assert
+response = booking_client.create_booking(payload)
+assert response.status_code == 200
+assert response.json()["bookingid"]
+assert response.json()["booking"] == payload
+```
+
+## Never weaken a failing assertion
+
+If a test fails, fix the app, locator, wait, or test data. Do not delete the assertion, skip the test to hide the failure, broaden the expected value, or replace a real `assert` with a no-op just to make the run pass.
