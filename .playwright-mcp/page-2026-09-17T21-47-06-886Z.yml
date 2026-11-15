@@ -1,0 +1,72 @@
+- generic [ref=f2e141]:
+  - generic [ref=f2e142]:
+    - banner [ref=f2e143]:
+      - generic [ref=f2e144]:
+        - generic [ref=f2e145]:
+          - button "Open Menu" [ref=f2e146] [cursor=pointer]
+          - img "Open Menu" [ref=f2e147]
+        - generic [ref=f2e148]: Swag Labs
+        - button "Cart, 1 items" [ref=f2e151]:
+          - generic [ref=f2e152]: "1"
+      - generic [ref=f2e153]: Dynamic Catalog - Lazy Load
+    - generic [ref=f2e155]:
+      - generic [ref=f2e156]:
+        - img "Sauce Labs Bike Light" [ref=f2e157]
+        - generic [ref=f2e158]: Sauce Labs Bike Light
+        - generic [ref=f2e159]: $9.99
+      - generic [ref=f2e160]:
+        - img "Sauce Labs Bolt T-Shirt (XS)" [ref=f2e161]
+        - generic [ref=f2e162]: Sauce Labs Bolt T-Shirt (XS)
+        - generic [ref=f2e163]: $15.99
+      - generic [ref=f2e164]:
+        - img "Sauce Labs Onesie" [ref=f2e165]
+        - generic [ref=f2e166]: Sauce Labs Onesie
+        - generic [ref=f2e167]: $7.99
+      - generic [ref=f2e168]:
+        - img "Test.allTheThings() T-Shirt (Red) (XS)" [ref=f2e169]
+        - generic [ref=f2e170]: Test.allTheThings() T-Shirt (Red) (XS)
+        - generic [ref=f2e171]: $15.99
+      - generic [ref=f2e172]:
+        - img "Sauce Labs Backpack" [ref=f2e173]
+        - generic [ref=f2e174]: Sauce Labs Backpack
+        - generic [ref=f2e175]: $29.99
+      - generic [ref=f2e176]:
+        - img "Sauce Labs Fleece Jacket (XS)" [ref=f2e177]
+        - generic [ref=f2e178]: Sauce Labs Fleece Jacket (XS)
+        - generic [ref=f2e179]: $49.99
+      - generic [ref=f2e180]:
+        - img "Sauce Labs Fleece Jacket (S)" [ref=f2e181]
+        - generic [ref=f2e182]: Sauce Labs Fleece Jacket (S)
+        - generic [ref=f2e183]: $49.99
+      - generic [ref=f2e184]:
+        - img "Sauce Labs Fleece Jacket (M)" [ref=f2e185]
+        - generic [ref=f2e186]: Sauce Labs Fleece Jacket (M)
+        - generic [ref=f2e187]: $49.99
+      - generic [ref=f2e188]:
+        - img "Sauce Labs Fleece Jacket (L)" [ref=f2e189]
+        - generic [ref=f2e190]: Sauce Labs Fleece Jacket (L)
+        - generic [ref=f2e191]: $49.99
+      - generic [ref=f2e192]:
+        - img "Sauce Labs Fleece Jacket (XL)" [ref=f2e193]
+        - generic [ref=f2e194]: Sauce Labs Fleece Jacket (XL)
+        - generic [ref=f2e195]: $49.99
+      - generic [ref=f2e196]:
+        - img "Sauce Labs Fleece Jacket (XXL)" [ref=f2e197]
+        - generic [ref=f2e198]: Sauce Labs Fleece Jacket (XXL)
+        - generic [ref=f2e199]: $49.99
+      - generic [ref=f2e200]:
+        - img "Test.allTheThings() T-Shirt (Red) (S)" [ref=f2e201]
+        - generic [ref=f2e202]: Test.allTheThings() T-Shirt (Red) (S)
+        - generic [ref=f2e203]: $15.99
+  - contentinfo [ref=f2e205]:
+    - list [ref=f2e206]:
+      - listitem [ref=f2e207]:
+        - link "X" [ref=f2e208] [cursor=pointer]:
+          - /url: https://x.com/saucelabs
+      - listitem [ref=f2e209]:
+        - link "Facebook" [ref=f2e210] [cursor=pointer]:
+          - /url: https://www.facebook.com/saucelabs
+      - listitem [ref=f2e211]:
+        - link "LinkedIn" [ref=f2e212] [cursor=pointer]:
+          - /url: https://www.linkedin.com/company/sauce-labs/
+    - generic [ref=f2e213]: © 2026 Sauce Labs. All Rights Reserved. Terms of Service | Privacy Policy

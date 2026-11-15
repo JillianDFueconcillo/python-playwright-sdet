@@ -1,0 +1,52 @@
+- generic [ref=f5e3]:
+  - generic [ref=f5e4]:
+    - banner [ref=f5e5]:
+      - generic [ref=f5e6]:
+        - generic:
+          - generic:
+            - generic [ref=f5e7]:
+              - button "Open Menu" [ref=f5e8] [cursor=pointer]
+              - img "Open Menu" [ref=f5e9]
+            - generic [aria-hidden] [ref=f5e10]:
+              - navigation [ref=f5e12]:
+                - button [ref=f5e13] [cursor=pointer]: All Items
+                - button [ref=f5e14] [cursor=pointer]: Dynamic Catalog
+                - link [ref=f5e16] [cursor=pointer]:
+                  - /url: https://saucelabs.com/
+                  - text: About
+                - button [ref=f5e17] [cursor=pointer]: Logout
+                - button [ref=f5e18] [cursor=pointer]: Reset App State
+              - button [ref=f5e20] [cursor=pointer]: Close Menu
+        - generic [ref=f5e22]: Swag Labs
+        - button "Cart, 1 items" [ref=f5e25]:
+          - generic [ref=f5e26]: "1"
+      - generic [ref=f5e27]: Your Cart
+    - main [ref=f5e29]:
+      - generic [ref=f5e30]:
+        - generic [ref=f5e31]:
+          - generic [ref=f5e32]: QTY
+          - generic [ref=f5e33]: Description
+          - generic [ref=f5e34]:
+            - generic [ref=f5e35]: "1"
+            - generic [ref=f5e36]:
+              - button "View details for Sauce Labs Backpack" [ref=f5e37] [cursor=pointer]:
+                - generic [ref=f5e38]: Sauce Labs Backpack
+              - generic [ref=f5e39]: carry.allTheThings() with the sleek, streamlined Sly Pack that melds uncompromising style with unequaled laptop and tablet protection.
+              - generic [ref=f5e40]:
+                - generic [ref=f5e41]: $29.99
+                - button "Remove" [ref=f5e42] [cursor=pointer]
+        - generic [ref=f5e43]:
+          - button "Continue Shopping" [ref=f5e44] [cursor=pointer]
+          - button "Checkout" [ref=f5e45] [cursor=pointer]
+  - contentinfo [ref=f5e46]:
+    - list [ref=f5e47]:
+      - listitem [ref=f5e48]:
+        - link "X" [ref=f5e49] [cursor=pointer]:
+          - /url: https://x.com/saucelabs
+      - listitem [ref=f5e50]:
+        - link "Facebook" [ref=f5e51] [cursor=pointer]:
+          - /url: https://www.facebook.com/saucelabs
+      - listitem [ref=f5e52]:
+        - link "LinkedIn" [ref=f5e53] [cursor=pointer]:
+          - /url: https://www.linkedin.com/company/sauce-labs/
+    - generic [ref=f5e54]: © 2026 Sauce Labs. All Rights Reserved. Terms of Service | Privacy Policy

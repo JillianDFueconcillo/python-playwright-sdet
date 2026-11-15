@@ -1,5 +1,3 @@
-from urllib.parse import urlparse
-
 import pytest
 
 from pages.InventoryPage import InventoryPage
@@ -22,6 +20,8 @@ def test_cart_page_loads(inventory_page: InventoryPage):
         ("sauce-labs-bike-light", "Sauce Labs Bike Light"),
         ("sauce-labs-bolt-t-shirt", "Sauce Labs Bolt T-Shirt"),
         ("sauce-labs-onesie", "Sauce Labs Onesie"),
+        ("sauce-labs-fleece-jacket", "Sauce Labs Fleece Jacket"),
+        ("test.allthethings()-t-shirt-(red)", "Test.allTheThings() T-Shirt (Red)"),
     ],
 )
 def test_each_product_can_be_added(cart_with, item_id, item_name):
@@ -48,7 +48,7 @@ def test_remove_one_item_from_cart(cart_with):
     assert cart_page.get_item_names() == ["Sauce Labs Bike Light"]
 
 
-def test_add_three_items_then_remove_one(cart_with):
+def test_add_three_items_and_remove_one(cart_with):
     cart_page = cart_with(
         "sauce-labs-backpack",
         "sauce-labs-bike-light",
@@ -56,17 +56,19 @@ def test_add_three_items_then_remove_one(cart_with):
     )
 
     assert cart_page.get_item_count() == 3
-    names = cart_page.get_item_names()
-    assert "Sauce Labs Backpack" in names
-    assert "Sauce Labs Bike Light" in names
-    assert "Sauce Labs Bolt T-Shirt" in names
+    assert cart_page.get_item_names() == [
+        "Sauce Labs Backpack",
+        "Sauce Labs Bike Light",
+        "Sauce Labs Bolt T-Shirt",
+    ]
 
     cart_page.remove_item("sauce-labs-bike-light")
 
-    remaining = cart_page.get_item_names()
     assert cart_page.get_item_count() == 2
-    assert remaining == ["Sauce Labs Backpack", "Sauce Labs Bolt T-Shirt"]
-    assert "Sauce Labs Bike Light" not in remaining
+    assert cart_page.get_item_names() == [
+        "Sauce Labs Backpack",
+        "Sauce Labs Bolt T-Shirt",
+    ]
 
 
 # remove_item returns self, so calls can be chained. End state: cart empty.
@@ -80,37 +82,54 @@ def test_remove_both_items_by_chaining(cart_with):
 
 def test_cart_badge_appears_when_item_added(cart_with):
     cart_page = cart_with("sauce-labs-backpack")
-
     assert cart_page.get_cart_badge().is_visible()
+
+
+def test_cart_row_shows_quantity_and_price(cart_with):
+    cart_page = cart_with("sauce-labs-backpack")
+
+    assert cart_page.get_quantities() == [1]
+    assert cart_page.get_item_prices() == [29.99]
+
+
+def test_continue_shopping_returns_to_products(cart_with):
+    inventory_page = cart_with("sauce-labs-backpack").continue_shopping()
+
+    assert inventory_page.get_title().text_content() == "Products"
+    assert inventory_page.get_remove_button("sauce-labs-backpack").is_visible()
+
+
+def test_empty_cart_can_start_checkout(inventory_page: InventoryPage):
+    checkout_page = inventory_page.open_cart().start_checkout()
+
+    assert checkout_page.get_title().text_content() == "Checkout: Your Information"
 
 
 def test_remove_item_updates_cart_badge(cart_with):
     cart_page = cart_with("sauce-labs-backpack", "sauce-labs-bike-light")
-
     assert cart_page.get_cart_badge_count() == 2
 
     cart_page.remove_item("sauce-labs-backpack")
-
     assert cart_page.get_cart_badge_count() == 1
-    assert cart_page.get_item_count() == 1
     assert cart_page.get_item_names() == ["Sauce Labs Bike Light"]
 
-
-INVENTORY_REQUIRES_LOGIN = (
-    "Epic sadface: You can only access '/inventory.html' when you are logged in."
-)
+    cart_page.remove_item("sauce-labs-bike-light")
+    assert cart_page.get_cart_badge_count() == 0
+    assert cart_page.get_item_count() == 0
 
 
 def test_logout_returns_to_login_screen(inventory_page: InventoryPage):
     login_page = inventory_page.open_cart().logout()
 
-    assert urlparse(login_page.page.url).path in ("/", "")
-    assert login_page.get_login_button().get_attribute("value") == "Login"
+    assert login_page.login_button.is_visible()
+    assert login_page.page.url.rstrip("/") == "https://www.saucedemo.com"
 
 
-def test_logout_blocks_direct_inventory_url(inventory_page: InventoryPage):
+def test_logout_blocks_direct_inventory_access(inventory_page: InventoryPage):
     login_page = inventory_page.open_cart().logout()
     login_page.page.goto("/inventory.html")
 
-    assert login_page.get_login_button().get_attribute("value") == "Login"
-    assert login_page.get_error_message().inner_text().strip() == INVENTORY_REQUIRES_LOGIN
+    assert login_page.login_button.is_visible()
+    assert login_page.get_error_message().text_content() == (
+        "Epic sadface: You can only access '/inventory.html' when you are logged in."
+    )

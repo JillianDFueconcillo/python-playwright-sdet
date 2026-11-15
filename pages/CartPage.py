@@ -24,12 +24,15 @@ class CartPage:
         # Burger menu (used by logout)
         self.menu_button = page.locator("#react-burger-menu-btn")
         self.logout_link = page.locator("[data-test=\"logout-sidebar-link\"]")
+        self.all_items_link = page.locator("[data-test=\"inventory-sidebar-link\"]")
 
     # Methods (Wrapper)
     def start_checkout(self) -> CheckoutPage:
         # We navigate to a NEW screen, so we return that screen's page object.
         self.checkout_button.click()
-        return CheckoutPage(self.page)
+        checkout_page = CheckoutPage(self.page)
+        checkout_page.first_name.wait_for()
+        return checkout_page
 
     def continue_shopping(self):
         # Navigates back to the inventory page.
@@ -38,7 +41,9 @@ class CartPage:
         from pages.InventoryPage import InventoryPage
 
         self.continue_shopping_button.click()
-        return InventoryPage(self.page)
+        inventory_page = InventoryPage(self.page)
+        inventory_page.get_sort_dropdown().wait_for()
+        return inventory_page
 
     def remove_item(self, item_id: str):
         # item_id looks like "sauce-labs-backpack".
@@ -49,6 +54,15 @@ class CartPage:
         # cart_page.remove_item("a").remove_item("b")
         return self
 
+    def open_all_items(self):
+        from pages.InventoryPage import InventoryPage
+
+        self.menu_button.click()
+        self.all_items_link.click()
+        inventory_page = InventoryPage(self.page)
+        inventory_page.get_sort_dropdown().wait_for()
+        return inventory_page
+
     def logout(self):
         # Same circular-import escape: LoginPage -> InventoryPage -> CartPage -> LoginPage
         # would be a loop if this import sat at the top of the file.
@@ -57,7 +71,9 @@ class CartPage:
 
         self.menu_button.click()
         self.logout_link.click()
-        return LoginPage(self.page)
+        login_page = LoginPage(self.page)
+        login_page.get_login_button().wait_for()
+        return login_page
 
     # Getters (are used for assertions later.)
     def get_title(self):
@@ -87,8 +103,14 @@ class CartPage:
             prices.append(float(price_text.replace("$", "")))
         return prices
 
+    def get_quantities(self):
+        return [int(quantity) for quantity in self.item_quantities.all_text_contents()]
+
     def get_checkout_button(self):
         return self.checkout_button
+
+    def get_continue_shopping_button(self):
+        return self.continue_shopping_button
 
     def get_row_for(self, item_name: str):
         # filter(has_text=...) narrows the list of rows down to the one

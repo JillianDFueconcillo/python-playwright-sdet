@@ -1,15 +1,34 @@
 import os
+from pathlib import Path
+
+# Must run before Playwright launches a browser. Cursor's agent sandbox points
+# PLAYWRIGHT_BROWSERS_PATH at a temp cache that is wiped between runs.
+_sandbox_browsers = os.environ.get("PLAYWRIGHT_BROWSERS_PATH", "").replace("\\", "/")
+_stable_browsers = Path.home() / "AppData" / "Local" / "ms-playwright"
+if "cursor-sandbox-cache" in _sandbox_browsers or (
+    _sandbox_browsers and not Path(_sandbox_browsers).exists()
+):
+    os.environ["PLAYWRIGHT_BROWSERS_PATH"] = str(_stable_browsers)
+
 import pytest
-from playwright.sync_api import Page
 from dotenv import load_dotenv
+from playwright.sync_api import Page
 
 from pages.CheckoutPage import CheckoutPage
 from pages.LoginPage import LoginPage
 from pages.InventoryPage import InventoryPage
+from pages.ProductPage import ProductPage
 
 pytest_plugins = ["support.allure_hooks"]
 
 load_dotenv()
+
+
+def pytest_configure(config):
+    # Test Explorer runs --collect-only; pytest-html still writes a report and
+    # that extra stdout makes the Testing view mark every file as failed.
+    if getattr(config.option, "collectonly", False) and hasattr(config.option, "htmlpath"):
+        config.option.htmlpath = None
 
 
 
@@ -73,6 +92,11 @@ def inventory_page(logged_in_page: Page) -> InventoryPage:
     """Logged in as standard_user, sitting on the products page."""
     logged_in_page.goto("/inventory.html")
     return InventoryPage(logged_in_page)
+
+@pytest.fixture
+def product_page(inventory_page: InventoryPage) -> ProductPage:
+    """Logged in, on the first product's detail screen (Sauce Labs Backpack)."""
+    return inventory_page.open_first_product()
 
 @pytest.fixture
 def checkout_started(inventory_page: InventoryPage) -> CheckoutPage:
