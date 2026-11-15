@@ -123,3 +123,4 @@ for name, seconds in durations:
     if seconds > 5:
         name.index()
         raise TimeoutError(f"Test {name} took too long to run")
+# for
