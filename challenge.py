@@ -113,8 +113,13 @@ durations = [
 ]
  
 sorted(durations)                  # sorts by NAME - alphabetical
-durations_seconds = []
-for name, seconds in durations:
-    durations_seconds.append(seconds)
+
+def get_seconds(row):
+    return row[1]
 
 sorted(durations, key=durations_seconds) # sorts by TIME
+
+for name, seconds in durations:
+    if seconds > 5:
+        name.index()
+        raise TimeoutError(f"Test {name} took too long to run")
