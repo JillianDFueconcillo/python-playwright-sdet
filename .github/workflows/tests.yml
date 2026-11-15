@@ -13,7 +13,7 @@ env:
 jobs:
   # ----------------------------------------------------------- UI (browser)
   ui-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
       SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD }}
@@ -53,7 +53,7 @@ jobs:
   # ------------------------------------------------------ API (no browser)
 
   api-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -91,7 +91,7 @@ jobs:
     # A report that only publishes on green is useless: the run you most want
     # to read is the failing one.
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4       # we need scripts/ and support/
 
