@@ -19,8 +19,8 @@ pytest. It runs on every push through GitHub Actions and publishes a report anyo
 ## Running it
 
 ```bash
-git clone https://github.com/<your-username>/pliskin_june11.git
-cd pliskin_june11
+git clone https://github.com/JillianDFueconcillo/python-playwright-sdet.git
+cd python-playwright-sdet
 
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
