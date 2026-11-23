@@ -16,10 +16,9 @@ statuses = {}
 
 for test in report["tests"]:
     #                  test_login -> passed
-    if test["status"] in statuses:
-        statuses[test["status"]] += 1
-    else:
-        statuses[test["status"]] = 1
+    if test["status"] == "passed":
+        statuses[test["name"]] = test["status"]
+
 
 seconds = 0
 
@@ -30,13 +29,9 @@ for test in report["tests"]:
 count = {}
 
 for test in report["tests"]:
-    status = test["status"]
-    count[status] = count.get(status, 0) + 1
-
+    count[test["status"]] = (count.get(test["status"], 0) + 1)
+  
 print(count)
-
-
-# sets
 
 files = set()
 
@@ -45,14 +40,41 @@ for test in report["tests"]:
 
 new_dict = dict.fromkeys(files)
 
+print(count)
+
+files_used = set()
+
+for test in report["tests"]:
+    files_used.add(test["file"])
+
+new_dict = dict.fromkeys(files)
+
+# failes names
+failed_names = []
+
+for test in report["tests"]:
+    if test["status"] == "failed":
+        failed_names.append(test["name"])
+
+#2 status_lookup
+status_lookup = {}
+
+for test in report["tests"]:
+    status_lookup[test["name"]] = test["status"]
+
+#3 count bu status
+count_by_status = {}
+
+for test in report["tests"]:
+    count_by_status[test["status"]] = count_by_status.get(test["status"], 0) + 1
+
+#4 files used
+
+for test in report["tests"]:
+    files_used.add(test["file"])
+
 
 # 1 - failed_names(report) → the names that failed. Walk the list.
-
-
 # 2 - status_lookup(report) → {name: status}. Build a dictionary.
-
-
 # 3 - count_by_status(report) → {"passed": 4, "failed": 2, "skipped": 1}. Count
-
-
 # 4 - files_used(report) → the three filenames, once each. Use a set.
